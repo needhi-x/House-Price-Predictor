@@ -1,6 +1,6 @@
 ### 🏡 House Price Prediction – Zillow AI Dashboard
 
-An **end-to-end Machine Learning project** that predicts house prices using advanced regression models and presents insights through a **premium Zillow-style Streamlit dashboard**.
+## An **end-to-end Machine Learning project** that predicts house prices using advanced regression models and presents insights through a **premium Zillow-style Streamlit dashboard**.
 
 🚀 Built with real-world dataset, interactive UI, and production-ready deployment.
 
