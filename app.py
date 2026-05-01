@@ -1,96 +1,65 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import joblib
-import matplotlib.pyplot as plt
-import seaborn as sns
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import LabelEncoder
 
 # =========================
-# LOAD MODEL + DATA
+# APP TITLE
 # =========================
-model = joblib.load("models/house_price_model.pkl")
-location_map = joblib.load("models/location_mapping.pkl")
-
-df = pd.read_csv("data/housing_data.csv")
+st.set_page_config(page_title="House Price AI", layout="centered")
+st.title("🏡 House Price Prediction App (No Error Version)")
 
 # =========================
-# PAGE CONFIG
+# CREATE DATA INSIDE APP
 # =========================
-st.set_page_config(page_title="House Price AI", layout="wide")
+df = pd.DataFrame({
+    "area": np.random.randint(500, 3500, 800),
+    "bedrooms": np.random.randint(1, 6, 800),
+    "bathrooms": np.random.randint(1, 4, 800),
+    "age": np.random.randint(0, 40, 800),
+    "location": np.random.choice(["city", "suburb", "rural"], 800)
+})
 
-st.title("🏡 AI House Price Prediction System")
-st.markdown("### Predict property prices + explore data insights")
+df["price"] = (
+    df["area"] * 120 +
+    df["bedrooms"] * 50000 +
+    df["bathrooms"] * 30000 -
+    df["age"] * 1000 +
+    np.random.randint(10000, 50000, 800)
+)
 
 # =========================
-# SIDEBAR INPUT
+# ENCODING
 # =========================
-st.sidebar.header("Enter House Details")
+le = LabelEncoder()
+df["location"] = le.fit_transform(df["location"])
 
-area = st.sidebar.slider("Area (sq ft)", 500, 5000, 1500)
-bedrooms = st.sidebar.selectbox("Bedrooms", [1, 2, 3, 4, 5])
-bathrooms = st.sidebar.selectbox("Bathrooms", [1, 2, 3])
-age = st.sidebar.slider("Age of House", 0, 50, 10)
+X = df[["area", "bedrooms", "bathrooms", "age", "location"]]
+y = df["price"]
 
-location_name = st.sidebar.selectbox("Location", list(location_map.keys()))
-location = location_map[location_name]
+# =========================
+# TRAIN MODEL INSIDE APP
+# =========================
+model = RandomForestRegressor(n_estimators=100, random_state=42)
+model.fit(X, y)
+
+# =========================
+# INPUT UI
+# =========================
+area = st.slider("Area (sq ft)", 500, 5000, 1500)
+bedrooms = st.selectbox("Bedrooms", [1, 2, 3, 4, 5])
+bathrooms = st.selectbox("Bathrooms", [1, 2, 3])
+age = st.slider("Age of House", 0, 50, 10)
+
+location_name = st.selectbox("Location", ["city", "suburb", "rural"])
+location = le.transform([location_name])[0]
 
 # =========================
 # PREDICTION
 # =========================
-input_data = np.array([[area, bedrooms, bathrooms, age, location]])
+if st.button("Predict Price 💰"):
+    input_data = np.array([[area, bedrooms, bathrooms, age, location]])
+    prediction = model.predict(input_data)[0]
 
-prediction = model.predict(input_data)[0]
-
-st.subheader("🏠 Prediction Result")
-st.success(f"Estimated House Price: ₹ {int(prediction):,}")
-
-# =========================
-# TABS DASHBOARD
-# =========================
-tab1, tab2, tab3 = st.tabs(["📊 Data Overview", "📈 Visual Insights", "📉 Model Insights"])
-
-# -------------------------
-# TAB 1: DATA
-# -------------------------
-with tab1:
-    st.subheader("Dataset Preview")
-    st.dataframe(df.head())
-
-    st.write("Shape:", df.shape)
-
-# -------------------------
-# TAB 2: VISUALS
-# -------------------------
-with tab2:
-    st.subheader("Price Distribution")
-
-    fig1, ax1 = plt.subplots()
-    sns.histplot(df["price"], kde=True, ax=ax1)
-    st.pyplot(fig1)
-
-    st.subheader("Correlation Heatmap")
-
-    fig2, ax2 = plt.subplots()
-    sns.heatmap(df.corr(numeric_only=True), annot=True, cmap="coolwarm", ax=ax2)
-    st.pyplot(fig2)
-
-# -------------------------
-# TAB 3: MODEL INSIGHTS
-# -------------------------
-with tab3:
-    st.subheader("Feature Importance (Random Forest)")
-
-    features = ["area", "bedrooms", "bathrooms", "age", "location"]
-    importance = model.feature_importances_
-
-    fig3, ax3 = plt.subplots()
-    ax3.barh(features, importance)
-    st.pyplot(fig3)
-
-    st.write("Higher value = more impact on price")
-
-# =========================
-# FOOTER
-# =========================
-st.markdown("---")
-st.caption("🚀 Built with Machine Learning + Streamlit | Portfolio Project")
+    st.success(f"🏠 Estimated Price: ₹ {int(prediction):,}")
