@@ -176,8 +176,3 @@ with tab3:
 st.markdown("---")
 st.caption("🚀 Zillow-style AI Dashboard | Built with Streamlit + Machine Learning")
 
-st.markdown("""
-    <style>
-    [data-testid="stSidebar"] {display: none;}
-    </style>
-""", unsafe_allow_html=True)
