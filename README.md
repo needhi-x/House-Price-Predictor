@@ -1,6 +1,6 @@
-### 🏡 House Price Prediction – Zillow AI Dashboard
+## 🏡 House Price Prediction – Zillow AI Dashboard
 
-## An **end-to-end Machine Learning project** that predicts house prices using advanced regression models and presents insights through a **premium Zillow-style Streamlit dashboard**.
+An **end-to-end Machine Learning project** that predicts house prices using advanced regression models and presents insights through a **premium Zillow-style Streamlit dashboard**.
 
 🚀 Built with real-world dataset, interactive UI, and production-ready deployment.
 
@@ -105,10 +105,10 @@ House-Price-Prediction/
 │   └── house_price_model.pkl
 │
 ├── images/
-│   ├── 01_dashboard.png
-│   ├── 02_market.png
-│   ├── 03_analytics.png
-│   └── 04_prediction.png
+│   ├── dashboard.png
+│   ├── market_overview.png
+│   ├── analytics_dashboard.png
+│   └── prediction_dashboard.png
 ```
 
 ---
@@ -122,7 +122,7 @@ House-Price-Prediction/
 ![Market](images/market_overview.png)
 
 ### 📈 Analytics
-![Analytics](images/analytics_dashboard.png)
+![Analytics](images/analytics dashboard.png)
 
 ### 🤖 Prediction
 ![Prediction](images/prediction_insights.png)
@@ -177,13 +177,5 @@ Give it a ⭐ on GitHub and share your feedback!
 
 ## 🚀 Author
 
-Nidhi Apotikar
-
-
-
-
-
-
-
 **Nidhi Apotikar**  
-Aspiring Data Scientist | ML Enthusiast
+
