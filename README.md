@@ -105,7 +105,7 @@ House-Price-Prediction/
 │   └── house_price_model.pkl
 │
 ├── images/
-│   ├── actual_predicted.png
+│   ├── actual_vs_predicted.png
     ├── dashboard.png
 │   ├── market_overview.png
 │   ├── analytics_dashboard.png
