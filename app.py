@@ -11,11 +11,11 @@ from sklearn.preprocessing import LabelEncoder
 # =========================
 st.set_page_config(page_title="House Price Dashboard", layout="wide")
 
-st.title("🏡 Premium House Price Prediction Dashboard")
-st.markdown("### AI-powered real estate analytics + prediction system")
+st.title("🏡 Real Estate AI Dashboard")
+st.markdown("### Predict house prices + explore data insights")
 
 # =========================
-# DATA GENERATION
+# CREATE SYNTHETIC DATA
 # =========================
 df = pd.DataFrame({
     "area": np.random.randint(500, 3500, 1000),
@@ -49,46 +49,27 @@ model = RandomForestRegressor(n_estimators=100, random_state=42)
 model.fit(X, y)
 
 # =========================
-# SIDEBAR INPUT PANEL
+# TABS (DASHBOARD STRUCTURE)
 # =========================
-st.sidebar.header("🏠 Enter House Details")
-
-area = st.sidebar.slider("Area (sq ft)", 500, 5000, 1500)
-bedrooms = st.sidebar.selectbox("Bedrooms", [1, 2, 3, 4, 5])
-bathrooms = st.sidebar.selectbox("Bathrooms", [1, 2, 3])
-age = st.sidebar.slider("Age of House", 0, 50, 10)
-location_name = st.sidebar.selectbox("Location", ["city", "suburb", "rural"])
-location = le.transform([location_name])[0]
+tab1, tab2, tab3 = st.tabs(["🏡 Overview", "📊 Analytics", "🤖 Prediction"])
 
 # =========================
-# PREDICTION
+# TAB 1 - OVERVIEW
 # =========================
-input_data = np.array([[area, bedrooms, bathrooms, age, location]])
-prediction = model.predict(input_data)[0]
-
-st.sidebar.markdown("---")
-st.sidebar.success(f"💰 Predicted Price: ₹ {int(prediction):,}")
-
-# =========================
-# DASHBOARD TABS
-# =========================
-tab1, tab2, tab3 = st.tabs(["📊 Data Overview", "📈 Charts", "🤖 Model Insights"])
-
-# -------------------------
-# TAB 1: DATA OVERVIEW
-# -------------------------
 with tab1:
-    st.subheader("Dataset Preview")
-    st.dataframe(df.head())
+    st.subheader("Dataset Overview")
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Total Houses", len(df))
-    col2.metric("Avg Price", int(df["price"].mean()))
-    col3.metric("Max Price", int(df["price"].max()))
 
-# -------------------------
-# TAB 2: CHARTS
-# -------------------------
+    col1.metric("Total Houses", len(df))
+    col2.metric("Average Price", f"₹ {int(df['price'].mean()):,}")
+    col3.metric("Max Price", f"₹ {int(df['price'].max()):,}")
+
+    st.dataframe(df.head())
+
+# =========================
+# TAB 2 - ANALYTICS
+# =========================
 with tab2:
     st.subheader("Price Distribution")
 
@@ -108,24 +89,31 @@ with tab2:
     sns.heatmap(df.corr(numeric_only=True), annot=True, cmap="coolwarm", ax=ax3)
     st.pyplot(fig3)
 
-# -------------------------
-# TAB 3: MODEL INSIGHTS
-# -------------------------
-with tab3:
     st.subheader("Feature Importance")
 
-    features = ["area", "bedrooms", "bathrooms", "age", "location"]
-    importance = model.feature_importances_
-
     fig4, ax4 = plt.subplots()
-    ax4.barh(features, importance)
-    ax4.set_title("Feature Impact on Price")
+    features = ["area", "bedrooms", "bathrooms", "age", "location"]
+    ax4.barh(features, model.feature_importances_)
     st.pyplot(fig4)
 
-    st.info("Higher importance = stronger influence on house price prediction")
+# =========================
+# TAB 3 - PREDICTION ENGINE
+# =========================
+with tab3:
+    st.subheader("Enter House Details")
 
-# =========================
-# FOOTER
-# =========================
-st.markdown("---")
-st.caption("🚀 Built with Streamlit + Machine Learning | Premium Dashboard Project")
+    area = st.slider("Area (sq ft)", 500, 5000, 1500)
+    bedrooms = st.selectbox("Bedrooms", [1, 2, 3, 4, 5])
+    bathrooms = st.selectbox("Bathrooms", [1, 2, 3])
+    age = st.slider("Age of House", 0, 50, 10)
+    location_name = st.selectbox("Location", ["city", "suburb", "rural"])
+
+    location = le.transform([location_name])[0]
+
+    if st.button("Predict Price 💰"):
+        input_data = np.array([[area, bedrooms, bathrooms, age, location]])
+        prediction = model.predict(input_data)[0]
+
+        st.success(f"🏠 Estimated House Price: ₹ {int(prediction):,}")
+
+        st.info("This prediction is generated using a Random Forest Regression model trained on synthetic housing data.")
